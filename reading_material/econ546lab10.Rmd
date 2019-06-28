@@ -1,0 +1,594 @@
+---
+title: "ECON546 Lab10 Metropolis Hastings"
+author: "Jon Duan"
+date: "2017-03-28"
+output: html_notebook
+---
+
+MCMC is a general purpose technique for sampling from complex probabilistic models.
+
+1. Monte Carlo
+
+2. Markov Chain
+
+3. Metropolis Hasting
+
+
+## 1. Motivation
+
+
+If you need to calculate the mean or expectation of a function $f(\theta)$ of a random variable $\theta$ which has a complicated posterior pdf $p(\theta |y)$.
+
+$$E[f(\theta)] = \int p(\theta|y)f(\theta)d\theta$$
+
+You might not know how to do the integration.
+
+or you need to calculate the max of  of a posterior probability distribution  $p(\theta)$.
+
+$$\arg \max p(\theta|y)$$
+
+One way of solving the expectation is to draw $N$ random samples from $p(\theta)$ and when $N$ is sufficiently large we can approximate the expectation or the max by
+
+$$E[f(\theta)] \approx \frac{1}{N} \sum\limits_{i=1}^{N}f(\theta_i)$$
+
+apply the same strategy to finding $\arg \max p(\theta|y)$ by sampling from $p(\theta|y)$ and taking the max value in the set of samples.
+
+--------------------------
+
+### 1.1 Solution
+
+1.1 simulate directly
+
+1.2 inversed cdf
+
+1.3 reject/accepte sampling
+
+If we do not know exact/normalized pdf or it is very complicated, MCMC comes in handy.
+
+
+--------------------------
+
+### 1.2 Visualization
+
+[Introduction to Bayesian Statistics, part 2: MCMC and the Metropolis Hastings](https://www.youtube.com/watch?v=OTO1DygELpY&t=24s)
+
+---------------------------
+
+
+### 1.3 Markov Chains & Detailed Balance
+
+
+
+
+$$p(X_n|X_{n-1},X_{n-2},X_{n-3}...,X_{1}) = p(X_n|X_{n-1})$$
+
+
+To simulate a Markov chain we must formulate a **transition kernel**, $T(x_i,x_j)$. The transition kernel is the probability of moving from a state $x_i$ to a state $x_j$.
+
+
+**Convergence** for a Markov Chain means that it has a stationary distribution, $\pi$. A stationary distribution implies that if we run the Markov Chain repeatedly, for long enough time, the samples we get for each run will always form the same distribution.
+
+
+[Metropolis algorithm ](https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm)
+
+**Detailed balance** is a **sufficient but not necessary condition** for a Markov chain to be **stationary**. Detailed balance essentially says that
+
+    the probability of being in state x and transitioning to state x' must be equal to the probability of being in state x' and transitioning to state x
+
+
+
+
+$${\displaystyle T(x'|x)P(x)=T(x|x')P(x')} \tag 1 $$
+
+or 
+
+
+$${\displaystyle {\frac {T(x'|x)}{T(x|x')}}={\frac {P(x')}{P(x)}}}.$$
+
+
+The approach is to separate the transition in two sub-steps; the proposal and the acceptance-rejection. 
+
+
+Let $q(x'|x)$ denote the **candidate-generating density**, we can adjust $q$ by using a **probability of move** $\alpha(x'|x)$. 
+
+The **proposal distribution** ${\displaystyle \displaystyle q(x'|x)}$  is the conditional probability of proposing a state $x'$ given $x$, 
+
+
+and the **acceptance distribution** ${ \alpha(x'|x)}$ the conditional probability to accept the proposed state $x'$. 
+    
+    we design the acceptance probability function so that detailed balance is satisfied. 
+    
+
+
+
+The **transition probability** can be written as the product of them:
+
+
+
+$${\displaystyle T(x'|x)â¡q(x'|x)A(x'|x)} . $$
+
+Inserting this relation in the previous equation, we have
+
+$${\displaystyle {\frac {\alpha(x'|x)}{\alpha(x|x')}}={\frac {P(x')}{P(x)}}{\frac {q(x|x')}{q(x'|x)}}} .$$
+
+
+[The Metropolis-Hastings Algorithm - Jason Blevins](http://jblevins.org/notes/metropolis-hastings)
+
+
+The choice of $A$ follows the following logic. If 
+
+$$ P(x) q(x'|x)> P(x') q(x|x')  $$
+
+
+
+holds, then moves from $x$ to $x'$ are happening too often under $q$. We should thus choose  $\alpha(x|x') = 1$. But then, in order to satisfy (1) **Detailed balance**, we must have
+
+$$ P(x) q(x'|x) \alpha(x'|x) = P(x') q(x|x') \alpha(x|x')  $$
+
+
+$$ P(x) q(x'|x) \alpha(x'|x) = P(x') q(x|x')   $$
+
+The next step in the derivation is to choose an acceptance that fulfils the condition above. One common choice is the **Metropolis choice**:
+
+$${\displaystyle \alpha(x'|x)=\min \left(1,{\frac {P(x')}{P(x)}}{\frac {q(x|x')}{q(x'|x)}}\right)}$$
+
+
+
+i.e., we always accept when the acceptance is bigger than 1, and we reject accordingly when the acceptance is smaller than 1. This is the required quantity for the algorithm.
+The MetropolisâHastings algorithm thus consists in the following:
+
+1. Initialisation: pick an initial state x at random;
+
+2. randomly pick a new state $x'$ according to ${ \displaystyle q(x'|x)}$;
+
+3.accept the state according to ${ \displaystyle \alpha(x'|x)}$. If not accepted, transition doesn't take place, and so there is no need to update anything. Else, the system transits to x';
+
+4.go to 2 until T states were generated;
+
+5.save the state x, go to 2.
+
+The saved states are in principle drawn from the distribution ${\displaystyle P(x)}$, as step 4 ensures they are de-correlated. The value of T must be chosen according to different factors such as the proposal distribution and, formally, it has to be of the order of the autocorrelation time of the Markov process.[13]
+It is important to notice that it is not clear, in a general problem, which distribution ${ \displaystyle q(x'|x)}$ one should use; it is a free parameter of the method which has to be adjusted to the particular problem in hand.
+
+-------------------------
+  
+### 1.4 Property
+
+Another interesting property of the MetropolisâHastings algorithm that adds to its appeal is that it **only depends on the ratios**
+
+
+
+$$ \frac{P(x')}{P(x)}$$
+
+is the probability (e.g., Bayesian posterior) ratio between the proposed sample ${\displaystyle x'\,}$ , and the previous sample ${\displaystyle x_{t}\,}$, and
+
+$$\frac{q(x|x')}{q(x'|x)}$$
+
+is the ratio of the proposal density in two directions (from ${\displaystyle x_{t}\,}$, to ${\displaystyle x'\,}$ and vice versa). This is equal to 1 if the proposal density is symmetric.
+
+
+Note that $A(x'|x)$ does not require knowledge of the normalizing constant because it drops out of the ratio $\frac{P(x')}{P(x)}$.
+
+
+
+The Markov chain is started from an arbitrary initial value ${\displaystyle \displaystyle x_{0}}$  and the algorithm is run for many iterations until this initial state is "forgotten". These samples, which are discarded, are known as burn-in. The remaining set of accepted values of ${\displaystyle x}$ represent a sample from the distribution ${\displaystyle P(x)}$
+
+--------------------
+
+### 1.5 Converge
+
+If the domain explored by q (its support) is too small, compared with the range of f, the Markov chain will have difficulties in exploring this range and thus will converge very slowly (if at all for practical purposes).
+
+
+-----------------------
+
+## 2. A simple Metropolis sampler
+### 2.1 A simple Metropolis-Hastings independence sampler
+
+
+Let's look at simulating from a **gamma target distribution** with arbitrary shape and scale parameters,using a Metropolis-Hastings independence sampling algorithm with **normal proposal distribution** with the same mean and variance as the desired gamma.
+
+A function for the Metropolis-Hastings sampler for this problem is given below. The chain is initialised at zero, and at each stage a N(a/b,a/(b*b)) candidate is proposed.
+
+$$q(x'|x) \sim N(a/b,a/(b*b))$$
+
+Metropolis-Hastings independence sampler for a gamma based on normal candidates/instrumental/proposal/jumping distribution with the same mean and variance
+
+1. Start in some state $x_t$. x in code.
+2. Propose a new state $x^\prime$ candidate in code
+3. Compute the "acceptance probability"
+$$\alpha(x'|x) = \min\left[1, \frac{dgamma(x^\prime, a, b)*dnorm(x, 
+                        mu, sig)}{dgamma(x, 
+                        a, b)*dnorm(x^\prime, mu, sig)} \right]$$
+4. Draw some uniformly distributed random number $u$ from $[0,1]$; if $u < \alpha$ accept the point, setting $x_{t+1} = x^\prime$.
+Otherwise reject it and set $x_{t+1} = x_t$.
+
+
+
+![MH visualization](https://theoreticalecology.files.wordpress.com/2010/09/metropolis-hastings.gif?w=700)
+
+
+
+Figure: A visualization of the Metropolis-Hastings MCMC, from Hartig et al., 2011. (copyright see publisher)
+
+
+
+```{r gamm}
+set.seed(123)
+gamm<-function (n, a, b){
+        mu <- a/b
+        sig <- sqrt(a/(b * b))
+        vec <- vector("numeric", n)
+        x <- 3*a/b
+        vec[1] <- x
+        for (i in 2:n) {
+                can <- rnorm(1, mu, sig)
+                aprob <- min(1, (dgamma(can, a, b)/dgamma(x, 
+                        a, b))/(dnorm(can, mu, sig)/dnorm(x, 
+                        mu, sig)))
+                u <- runif(1)
+                if (u < aprob) 
+                        x <- can
+                vec[i] <- x
+        }
+        return(vec)
+}
+```
+
+
+
+------------------------------------
+
+### 2.2  Plots
+
+Set parameters.
+
+```{r vec}
+nrep<- 55000
+burnin<- 5000
+shape<- 2.3
+rate<-2.7
+
+vec<-gamm(nrep,shape, rate)
+
+```
+
+
+
+
+Modify the plots below so they apply only to the chain AFTER the burn-in period
+
+
+
+
+```{r burnin}
+vec=vec[-(1:burnin)]
+#vec=vec[burnin:length(vec)]
+```
+
+
+
+
+```{r plot}
+par(mfrow=c(2,1)) # change main frame, how many graphs in one frame
+plot(ts(vec), xlab="Chain", ylab="Draws")
+abline(h = mean(vec), lwd="2", col="red" )
+hist(vec,30, prob=TRUE, xlab="Red Line = mean", col="grey", main="Simulated Density")
+abline(v = mean(vec), lwd="2", col="red" )
+par(mfrow=c(1,1)) # go back to default
+```
+
+
+--------------------------------
+
+### 2.3 summary
+
+```{r summary}
+summary(vec[-(1:burnin)]);  
+var(vec[-(1:burnin)])
+```
+
+### 2.4 Initial Value
+
+The first sample in `vec` is the initial /start value for our chain. We can change it to see if the convergence changes.
+
+```r
+        x <- 3*a/b
+        vec[1] <- x
+```
+
+---------------------------
+
+### 2.5 Choose proposal
+
+The algorithm works best if the proposal density matches the shape of the target distribution $P(x)$ from which direct sampling is difficult, that is ${\displaystyle q(x'|x_{t})\approx P(x')\,\!}$. If a Gaussian proposal density ${q}$ is used, the variance parameter $\sigma^{2}$ has to be tuned during the burn-in period. 
+
+This is usually done by calculating the acceptance rate, which is the fraction of proposed samples that is accepted in a window of the last $N$ samples. 
+
+The **desired acceptance rate** depends on the target distribution, however it has been shown theoretically that the **ideal acceptance rate** for a one-dimensional Gaussian distribution is approx 50%, decreasing to approx 23% for an $N$-dimensional Gaussian target distribution.
+
+If $\sigma^{2}$ is too small the chain will mix slowly (i.e., the acceptance rate will be high but successive samples will move around the space slowly and the chain will converge only slowly to $\displaystyle P(x)$). 
+
+On the other hand, if $\displaystyle \sigma^{2}$ is too large the acceptance rate will be very low because the proposals are likely to land in regions of much lower probability density, so $\displaystyle a_{1}$ will be very small and again the chain will converge very slowly.
+
+
+-----------------------------
+
+## 3. Sample 2: Bayesian Estimation for Regression 
+
+
+
+
+
+(a) Check your understanding of the Metropolis-Hastings sampler that is being used here for
+Bayesian estimation of a regression model, using artificial data.
+
+This code is a modified version of that presented at
+ https://theoreticalecology.wordpress.com/2010/09/17/metropolis-hastings-mcmc-in-r/
+ (Modified by David Giles <dgiles@uvic.ca>, 21 March, 2016)
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. 
+ 
+ 
+ 
+ 
+ 
+ 
+$$y = Ax + B + u,\, u \sim N(0,sd)$$ 
+
+
+----------------------------
+
+
+### 3.1 Set parameter
+
+```{r para}
+trueA <- 5
+trueB <- 0
+trueSd <- 10
+sampleSize <- 31
+```
+
+
+----------------------------------
+
+### 3.2 DGP and Plot
+
+
+
+
+```{r}
+# create independent x-values, around zero
+x <- (-(sampleSize-1)/2):((sampleSize-1)/2)
+# create dependent values according to ax + b + N(0,sd)
+y <-  trueA * x + trueB + rnorm(n=sampleSize,mean=0,sd=trueSd)
+
+par(mfrow = c(1,1))
+plot(x,y, main="Test Data")
+
+```
+
+
+----------------------------
+
+### 3.3 likelihood from normal distribution
+
+
+
+
+```{r likelihood}
+likelihood <- function(param){
+    a = param[1]
+    b = param[2]
+    sd = param[3]
+     
+    pred = a*x + b
+    singlelikelihoods = dnorm(y, mean = pred, sd = sd, log = T)
+    sumll = sum(singlelikelihoods)
+    return(sumll)   
+}
+```
+
+
+-------------------------------
+
+### 3.4 Why work with logarithms
+
+Return the logarithm of the probabilities in the likelihood function, which is also the reason why I sum the probabilities of all our datapoints (the logarithm of a product equals the sum of the logarithms). 
+
+Why do we do this? It's strongly advisable because likelihoods, where a lot of small probabilities are multiplied, can get ridiculously small pretty fast (something like $10^{-34}$). At some stage, computer programs are getting into numerical rounding or underflow problems then. 
+
+So, bottom-line: __when you program something with likelihoods, always use logarithms!!!__
+
+------------------------------------
+
+### 3.5 Example: plot the likelihood profile of the slope a
+
+```{r plotlk}
+# Example: plot the likelihood profile of the slope a
+slopevalues <- function(x){return(likelihood(c(x, trueB, trueSd)))}
+slopelikelihoods <- lapply(seq(3, 7, by=.05), slopevalues )
+plot (seq(3, 7, by=.05), slopelikelihoods , type="l", xlab = "values of slope parameter a", ylab = "Log likelihood")
+
+```
+
+
+-----------------------------------
+
+### 3.6 Prior distribution
+
+uniform distributions and normal distributions for all three parameters.
+
+```{r prior}
+# Prior distribution
+prior <- function(param){
+    a = param[1]
+    b = param[2]
+    sd = param[3]
+# CHANGE THE NEXT 3 LINES TO CHANGE THE PRIOR, log is True, so these are log density/likelihood
+    aprior = dunif(a, min=0, max=10, log = T)
+    bprior = dnorm(b, sd = 2, log = T)
+    sdprior = dunif(sd, min=0, max=30, log = T)
+    return(aprior+bprior+sdprior)
+}
+```
+
+---------------------------------
+
+### 3.7 The posterior
+
+The product of prior and likelihood is the actual quantity the MCMC will be working on. This function is called the posterior (or to be exact, it's called the posterior after it's normalized, which the MCMC will do for us, but let's not be picky for the moment). Again, here we work with the sum because we work with logarithms.
+
+```{r posterior}
+posterior <- function(param){
+   return (likelihood(param) + prior(param))
+}
+
+```
+
+----------------------------
+
+### 3.8 Metropolis algorithm
+
+One of the most frequent applications of this algorithm (as in this example) is **sampling from the posterior density** in Bayesian statistics. 
+
+In principle, however, the algorithm may be used to sample from any integrable function. So, the aim of this algorithm is to **jump around in parameter space, but in a way that the probability to be at a point is proportional to the function we sample from (this is usually called the target function)**. 
+
+
+
+
+In our case this is the posterior defined above.
+
+1. Starting at a random parameter value
+
+2. Choosing a new parameter value close to the old value based on some probability density that is called the proposal function
+
+3. Jumping to this new point with a probability p(new)/p(old), where p is the target function, and p>1 means jumping as well 
+
+4. Note that we have a **symmetric jumping/proposal distribution** $q(x'|x)$.
+
+$$ q(x'|x) \sim N(x, c(0.1,0.5,0.3) )$$
+
+The standard diveation $\sigma$ are fixed. The $q(x'|x) = q(x|x')$.
+
+so the accept probablity equals to 
+
+$$\alpha(x'|x)=\min \left(1,\frac{P(x')}{P(x)} \right)$$
+
+```{r MH}
+######## Metropolis algorithm ################
+ 
+proposalfunction <- function(param){
+    return(rnorm(3,mean = param, sd= c(0.1,0.5,0.3)))
+
+}
+ 
+run_metropolis_MCMC <- function(startvalue, iterations){
+    chain = array(dim = c(iterations+1,3))
+    chain[1,] = startvalue
+    for (i in 1:iterations){
+        proposal = proposalfunction(chain[i,])
+         
+        probab = exp(posterior(proposal) - posterior(chain[i,]))
+        if (runif(1) < probab){
+            chain[i+1,] = proposal
+        }else{
+            chain[i+1,] = chain[i,]
+        }
+    }
+    return(chain)
+}
+```
+
+
+Again, working with the logarithms of the posterior might be a bit confusing at first, in particular when you look at the line where the acceptance probability is calculated `(probab = exp(posterior(proposal) - posterior(chain[i,])))`. To understand why we do this, note that `p1/p2 = exp[log(p1)-log(p2)]`.
+
+
+------------------------------------
+
+### 3.9 Implementation
+
+
+(e)Print the value of the quantity called acceptance, and interpret what it is telling you.
+
+
+```{r run}
+startvalue = c(4,0,10)
+chain = run_metropolis_MCMC(startvalue, 55000)
+#str(chain) 
+burnIn = 5000
+acceptance = 1-mean(duplicated(chain[-(1:burnIn),]))
+#?duplicated
+```
+
+
+The first steps of the algorithm may be biased by the initial value, and are therefore usually discarded for the further analysis (burn-in time). An interesting output to look at is the acceptance rate: how often was a proposal rejected by the metropolis-hastings acceptance criterion? The acceptance rate can be influenced by the proposal function: generally, the closer the proposals are, the larger the acceptance rate. Very high acceptance rates, however, are usually not beneficial: this means that the algorithms is "staying" at the same point, which results in a suboptimal probing of the parameter space (mixing).
+
+
+We also can change the intial / start value to see if it change the result/ if it change the convergence.
+
+```r
+startvalue = c(4,0,10)
+```
+
+
+-----------------------------------
+
+### 3.10 summary
+
+
+
+
+```{r sumChain}
+summary(cbind(chain[-(1:burnIn),1],chain[-(1:burnIn),2],chain[-(1:burnIn),3]))
+
+# for comparison:
+summary(lm(y~x))
+summary(lm(y~x))$sigma
+coefficients(lm(y~x))[1]
+coefficients(lm(y~x))[2]
+```
+
+
+
+--------------------------------
+
+### 3.11 Trace of chains:
+
+```{r plotchain}
+### Summary: #######################
+ 
+par(mfrow = c(2,3))
+hist(chain[-(1:burnIn),1],prob=TRUE,nclass=30,col="109" , main="Posterior of a", xlab="Black=mean; Red=true; Magenta = MLE" )
+abline(v = mean(chain[-(1:burnIn),1]), lwd="2")
+abline(v = trueA, col="red", lwd="2" )
+abline(v = coefficients(lm(y~x))[2], col="magenta", lwd="2" )
+
+hist(chain[-(1:burnIn),2],prob=TRUE, nclass=30, col="green",main="Posterior of b", xlab="Black=mean; Red=true; Magenta = MLE")
+abline(v = mean(chain[-(1:burnIn),2]), lwd="2")
+abline(v = trueB, col="red", lwd="2" )
+abline(v = coefficients(lm(y~x))[1], col="magenta", lwd="2" )
+
+hist(chain[-(1:burnIn),3],prob=TRUE, nclass=30, col="yellow",main="Posterior of sd", xlab="Black=mean; Red=true; Magenta = MLE")
+abline(v = mean(chain[-(1:burnIn),3]), lwd="2" )
+abline(v = trueSd, col="red", lwd="2" )
+abline(v = summary(lm(y~x))$sigma, col="magenta", lwd="2" )
+
+plot(chain[-(1:burnIn),1], col="648",type = "l", xlab="True value = red line" , main = "Chain values of a" )
+abline(h = trueA, col="red" )
+plot(chain[-(1:burnIn),2], col="648",type = "l", xlab="True value = red line" , main = "Chain values of b" )
+abline(h = trueB, col="red" )
+plot(chain[-(1:burnIn),3], col="648",type = "l", xlab="True value = red line" , main = "Chain values of sd" )
+abline(h = trueSd, col="red" )
+```
+
+--------------------------
+
+## Reference
+
+[CSC 446 Notes: Lecture 13](https://www.cs.rochester.edu/~gildea/2013_Spring/Notes/csc446lecture13notes.pdf)
+
+
+[MCMC Design and Tricks](http://www.stat.ucla.edu/~sczhu/courses/ucla/stat_232b/handouts/ch4_design_and_tricks.pdf)
+
+
+[Why does the Metropolis-Hastings procedure satisfy the detailed balance criterion?](http://people.duke.edu/~kh269/teaching/notes/MetropolisExplanation.pdf)
