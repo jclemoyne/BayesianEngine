@@ -1,3 +1,7 @@
+"""
+	Knowledge Machine (c) 2019 Jean Claude Lemoyne
+"""
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -18,13 +22,14 @@ def load_data():
 	return seq
 
 
-def sampler(seq, percent=0.1):
+def sampler(dist, seq, percent=0.1):
 	n = 0
 	n_male = 0
 	n_female = 0
 	for G in seq:
 		n += 1
-		u = np.random.uniform()
+		# u = np.random.uniform()
+		u = dist()
 		if u > percent:
 			continue
 		if G == 'F':
@@ -40,13 +45,13 @@ def sampler(seq, percent=0.1):
 	return male_ratio, female_ratio
 
 
-def resample(niter):
+def resample(dist, niter):
 	seq = load_data()
 	nbins = int(niter / 10)
 	print('# bin: ', nbins)
 	mratios = []
 	for i in range(niter):
-		mr, fr = sampler(seq)
+		mr, fr = sampler(dist, seq)
 		mratios += [mr]
 		j = i + 1
 		if j % 5 == 0:
@@ -58,8 +63,9 @@ def resample(niter):
 	# print(mratios)
 	plt.hist(mratios, density=True, bins=nbins)
 	plt.ylabel('male ratio')
-	plt.show()
 
 
 if __name__ == '__main__':
-	resample(1000)
+	resample(np.random.uniform, 1000)
+	# resample(np.random.standard_cauchy, 1000)
+	plt.show()
