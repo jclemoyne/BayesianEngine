@@ -63,6 +63,11 @@ def resample(dist, niter):
 				print('.', end = '')
 	print()
 	# print(mratios)
+	x = np.array(mratios)
+	mean = np.mean(x)
+	stdev = np.std(x)
+	print('mean: ', mean)
+	print('std dev: ', stdev)
 	plt.hist(mratios, density=True, bins=nbins)
 	plt.ylabel('male ratio')
 
