@@ -1,5 +1,7 @@
 """
 	Knowledge Machine (c) 2019 Jean Claude Lemoyne
+
+	This program illustrates the Central Limit Theorem (CLT)
 """
 
 import pandas as pd
