@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 
 source = 'data/singapore-residents-by-age-group-ethnic-group-and-sex-end-june-annual.csv'
 
+
 def load_data():
 	df = pd.read_csv(source)
 	print(df.head())
@@ -72,7 +73,16 @@ def resample(dist, niter):
 	plt.ylabel('male ratio')
 
 
+"""
+	Cauchy pdf is guven by f(x) = 1 / pi * (1 + x^2)
+"""
 if __name__ == '__main__':
 	resample(np.random.uniform, 1000)
-	# resample(np.random.standard_cauchy, 1000)
+	resample(np.random.standard_cauchy, 1000)
+	# resample(np.random.laplace, 1000)
+	# resample(np.random.lognormal, 1000)
+	# resample(np.random.logistic, 1000)
+	# resample(np.random.poisson, 1000)
 	plt.show()
+
+
