@@ -5,6 +5,7 @@
 
 import pandas as pd
 import pymc3 as pm
+from matplotlib import pyplot as plt
 
 
 def trial1():
@@ -13,16 +14,17 @@ def trial1():
 	county = pd.Categorical(radon['county']).codes
 	# print(county)
 
+	niter = 1000
 	with pm.Model() as hm:
 		# County hyperpriors
-		mu_a = pm.Normal('mu_a', mu=0, tau=1.0/100**2)
-		sigma_a = pm.Uniform('sigma_a', lower=0, upper=100)
-		mu_b = pm.Normal('mu_b', mu=0, tau=1.0/100**2)
-		sigma_b = pm.Uniform('sigma_b', lower=0, upper=100)
+		mu_a = pm.Normal('mu_a', mu=0, sd=10)
+		sigma_a = pm.HalfCauchy('sigma_a', beta=1)
+		mu_b = pm.Normal('mu_b', mu=0, sd=10)
+		sigma_b = pm.HalfCauchy('sigma_b', beta=1)
 
 		# County slopes and intercepts
 		a = pm.Normal('slope', mu=mu_a, sd=sigma_a, shape=len(set(county)))
-		b = pm.Normal('intercept', mu=mu_b, tau=1.0/sigma_b**2, shape=len(set(county)))
+		b = pm.Normal('intercept', mu=mu_b, sd=sigma_b, shape=len(set(county)))
 
 		# Houseehold errors
 		sigma = pm.Gamma("sigma", alpha=10, beta=1)
@@ -32,7 +34,13 @@ def trial1():
 
 		# Data likelihood
 		y = pm.Normal('y', mu=mu, sd=sigma, observed=radon.log_radon)
-		print(y)
+
+		start = pm.find_MAP()
+		step = pm.NUTS(scaling=start)
+		hm_trace = pm.sample(niter, step, start=start)
+
+		plt.figure(figsize=(8, 60))
+		pm.forestplot(hm_trace, varnames=['slope', 'intercept'])
 
 
 if __name__ == '__main__':
