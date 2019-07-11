@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="167d688f-c325-42b2-bf6d-860a4a794b6e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/benchmarks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clt_samling_example.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/clt_samling.py" beforeDir="false" afterPath="$PROJECT_DIR$/clt_samling.py" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -19,16 +18,22 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/clt_samling.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1337" />
+            <state relative-caret-position="198">
+              <caret line="76" column="20" selection-start-line="76" selection-start-column="20" selection-end-line="76" selection-end-column="20" />
+            </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/simplehmm.py">
-          <provider selected="true" editor-type-id="text-editor" />
+        <entry file="file://$PROJECT_DIR$/clt_samling_example.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="114">
+              <caret line="43" column="20" selection-start-line="43" selection-start-column="20" selection-end-line="43" selection-end-column="20" />
+            </state>
+          </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -43,7 +48,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/benchmarks.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-778">
@@ -133,6 +138,8 @@
         <option value="$PROJECT_DIR$/arma11.py" />
         <option value="$PROJECT_DIR$/GLM_hierarchical.py" />
         <option value="$PROJECT_DIR$/pymc3_snippet1.py" />
+        <option value="$PROJECT_DIR$/clt_samling_example.py" />
+        <option value="$PROJECT_DIR$/clt_samling.py" />
       </list>
     </option>
   </component>
@@ -212,7 +219,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.pymc3_snippet1">
+  <component name="RunManager" selected="Python.clt_samling">
     <configuration name="HMM" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="bayesian_workshop" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -354,8 +361,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.pymc3_snippet1" />
         <item itemvalue="Python.clt_samling" />
+        <item itemvalue="Python.pymc3_snippet1" />
         <item itemvalue="Python.arma11" />
         <item itemvalue="Python.linear_model" />
         <item itemvalue="Python.HMM" />
@@ -394,7 +401,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.41570142" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.12355212" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -523,11 +530,6 @@
     <entry file="file://$PROJECT_DIR$/logistic_model.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/clt_samling.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1337" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/GLM_hierarchical.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-7">
@@ -552,6 +554,20 @@
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/clt_samling_example.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="43" column="20" selection-start-line="43" selection-start-column="20" selection-end-line="43" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/clt_samling.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="76" column="20" selection-start-line="76" selection-start-column="20" selection-end-line="76" selection-end-column="20" />
         </state>
       </provider>
     </entry>

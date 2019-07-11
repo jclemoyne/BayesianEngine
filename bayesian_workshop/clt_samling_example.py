@@ -26,52 +26,19 @@ def load_data():
 
 
 def sampler(dist, seq, percent=0.1):
-	n = 0
-	n_male = 0
-	n_female = 0
-	for G in seq:
-		n += 1
-		# u = np.random.uniform()
-		u = dist()
-		if u > percent:
-			continue
-		if G == 'F':
-			n_female += 1
-		elif G == 'M':
-			n_male += 1
-
-	total_gender = n_male + n_female
-	male_ratio = float(n_male) / float(total_gender)
-	female_ratio = float(n_female) / float(total_gender)
-	# print ('# male: {} {:.4f}'.format(n_male, male_ratio))
-	# print ('# female: {} {:.4f}'.format(n_female, female_ratio))
-	return male_ratio, female_ratio
+	"""
+		TO DO sample using the dist process
+		return male ratio and female ratio as n_male, n_female over total gender
+	"""
+	pass
 
 
 def resample(dist, niter):
-	seq = load_data()
-	nbins = int(niter / 10)
-	print('# bin: ', nbins)
-	mratios = []
-	for i in range(niter):
-		mr, fr = sampler(dist, seq)
-		mratios += [mr]
-		j = i + 1
-		if j % 5 == 0:
-			if j % 100 == 0:
-				print('.')
-			else:
-				print('.', end = '')
-	print()
-	# print(mratios)
-	x = np.array(mratios)
-	mean = np.mean(x)
-	stdev = np.std(x)
-	print('mean: ', mean)
-	print('std dev: ', stdev)
-	plt.hist(mratios, density=True, bins=nbins)
-	plt.ylabel('male ratio')
-
+	"""
+		run sampler niter times and calculate male ratios average
+		plot history
+	"""
+	pass
 
 """
 	Cauchy pdf is given by f(x) = 1 / pi * (1 + x^2)
