@@ -74,7 +74,7 @@ def resample(dist, niter):
 
 
 """
-	Cauchy pdf is given by f(x) = 1 / pi * (1 + x^2)
+	Cauchy pdf is guven by f(x) = 1 / pi * (1 + x^2)
 """
 if __name__ == '__main__':
 	resample(np.random.uniform, 1000)
