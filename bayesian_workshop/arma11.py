@@ -85,5 +85,5 @@ def reuse_resample():
 
 if __name__ == '__main__':
 	# simulate_arma11_data()
-	train_arma11()
-	# reuse_resample()
+	# train_arma11()
+	reuse_resample()
